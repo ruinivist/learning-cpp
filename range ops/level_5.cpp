@@ -5,8 +5,7 @@
 #include <string>
 #include <vector>
 
-int main()
-{
+int main() {
     std::map<std::string, int> m = {
         {"a", 4},
         {"b", 9},
@@ -14,22 +13,27 @@ int main()
     };
 
     // 35. Produce a lazy range containing only the keys.
-    auto res35 = /* TODO */;
+    auto res35 = m | std::views::keys;
     assert(std::ranges::equal(res35, std::vector<std::string>{"a", "b", "c"}));
 
     // 36. Produce a lazy range containing only the values.
-    auto res36 = /* TODO */;
+    auto res36 = m | std::views::values;
     assert(std::ranges::equal(res36, std::vector{4, 9, 2}));
 
     // 37. Check whether any mapped value is greater than 5.
-    auto res37 = /* TODO */;
+    auto res37 = std::ranges::any_of(m | std::views::values,
+                                     [](auto& x) { return x > 5; });
     assert(res37 == true);
 
     // 38. Produce a lazy range of mapped values multiplied by 10.
-    auto res38 = /* TODO */;
+    auto res38 = m | std::views::values |
+                 std::views::transform([](auto& x) { return 10 * x; });
     assert(std::ranges::equal(res38, std::vector{40, 90, 20}));
 
-    // 39. Produce a lazy range of keys whose associated value is greater than 3.
-    auto res39 = /* TODO */;
+    // 39. Produce a lazy range of keys whose associated value is greater
+    // than 3.
+    auto res39 = m |
+                 std::views::filter([](auto& kv) { return kv.second > 3; }) |
+                 std::views::keys;
     assert(std::ranges::equal(res39, std::vector<std::string>{"a", "b"}));
 }
