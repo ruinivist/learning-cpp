@@ -1,10 +1,7 @@
 #include <algorithm>
 #include <cassert>
-#include <numeric>
 #include <ranges>
 #include <string>
-#include <tuple>
-#include <utility>
 #include <vector>
 
 int main() {
