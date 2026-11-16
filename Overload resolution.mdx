@@ -1,0 +1,47 @@
+---
+title: Overload resolution rules in cpp
+date: 17Nov26
+---
+
+- overload vs override
+  - compile time vs runtime
+- what is resolution?
+  - selecting most "appropriate" overload, all is done compile time
+- preferences rules for "appropriate"
+  - templates are deferred choices
+- what is discounted aka not considered overload?
+  - it relates to what is treated as a "different declaration"
+  - return values, `f(100)` => what does the return values even matter for decicing what branch to emit
+  - default arguments
+  - adding a static
+  - all of these are compile errors as they are not diff decls so are "redecs"
+- to overload or to template?
+  - overload when the behavior changes as in "what I intend as meaning changes"
+  - template when the intention is same
+
+actual rules of overload resolution
+
+- name lookup to get list of candidates
+- keep only the "viable" candidates
+  - what is viable?
+    - nums args match
+    - every args is implicity convertible to the neeeded type
+    - constraints must be satisfied ( cpp20 )
+- rank remaining
+  - exact match > promotion > standard conversion > ctor based conversion > ellipsis
+    - value and rvalue references are not considered better than by-value parameters
+  - get a count for EACH argument wehre this happens ( order does not matter )
+  - if count is same => ambiguous => compile time error
+  - certain tie breakers exist
+    - template deferred
+    - cpp20 constraints pick the more constrained one
+
+All of this is only useful for "puzzles". If you ever need to consult this list to know what function is used then it's really ugly code or some really niche library.
+
+### Practice
+
+TODO
+
+### Links
+
+- a really good writeup https://marvinthang.github.io/posts/cpp-overload-resolution/
