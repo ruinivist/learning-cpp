@@ -1,0 +1,18 @@
+---
+title: Generic stack is not so easy
+date: 17Nov26
+---
+
+choice hell
+
+- do I use a `std::array` with a fixed capacity and then a top
+  - I need to hanlde default contruction somehow => optional?
+  - if I use a vector then am I abstracting away too much
+- what sorts of push and pop do I need, am I overloading a little TOO much
+- i initially wrote `push(T elem)` and `push(T&& elem)`
+  - ambiguous and compile time failure for `push(42)` as both overloads can accept an rvalue and neither is preferred
+- does perfect forwarding apply here? why not?
+
+**learnings**
+
+- if you want to support all types, just use a `const lval ref` and an `rval` overload
