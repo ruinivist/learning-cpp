@@ -1,0 +1,78 @@
+---
+title: Class padding
+date: 24Nov26
+---
+
+- layout rules
+  - every member starts at a multiple of it's own `alignof`
+    - `alignof` is same as `sizeof` for primitive types
+  - then there exist two types of padding, internal and trailing
+  - algo for internal padding
+    - start at offset = 0
+    - walk each member and check if offset is divisible by the member's `alignof`, if not add internal padding bytes FIRST and then the member so it does
+  - trailing padding
+    - once the last member is placed, look at the largest alignof ( this becomes the alignof for the struct )
+    - add extra trailing bytes so that it's divisible by that max alignof
+- alignof of an array say `char[7]` is 1, while sizeof is 7
+- alignof of a struct is the struct's max align
+- reasoning?
+  - memory is only read in fixed size chunks ( words )
+  - say for short which is 2 bytes, by starting that at 0, 2, 4, 6 it's guaranteed to be withing the boundary
+  - 1 would work too? yes but well... historical and perf reasons, I don't make the rules
+- rem: an alignof will always be some power of 2
+- an empty class takes 1 bytes just to ensure it has a unique memory address
+- class with inheritance?
+  - base class members are laid our first
+
+### Practice
+
+- find `sizeof(Inner)` and `sizeof(Outer)`
+
+```cpp
+struct Inner {
+    int  a;
+    int  b;
+    char c[3];
+};
+
+struct Outer {
+    char  tag;
+    Inner in;
+    short s;
+};
+```
+
+- with virtual and static; `sizeof(Widget)`
+  - static will take 0 bytes, they live in global and are not counted in instance size
+  - don't forget to account for the vptrs
+
+```cpp
+class Widget {
+    static double ratio;
+    char  flag;
+    short id;
+public:
+    void render();
+    virtual void update();
+    virtual void destroy();
+};
+```
+
+- EBO and empty classes, `sizeof` for the 3 here
+  - `Empty` is 1
+  - in `A` is treated just like any member
+  - in `B` EBO ( empty base optim ) kicks in
+
+```cpp
+struct Empty {};
+
+struct A {
+    Empty  e;
+    double d;
+};
+
+struct B : Empty {
+    double d;
+    char   c;
+};
+```
